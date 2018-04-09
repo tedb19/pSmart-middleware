@@ -744,6 +744,7 @@ public class HomeController  {
      * should ensure card reader is initialized and connected
      *
      */
+
     public void readCardContent(ActionEvent event) throws ParseException {
         String readTest = readerWriter.readCard(SmartCardUtils.getUserFile(SmartCardUtils.CARD_DETAILS_USER_FILE_NAME), (byte)0x00 );
 

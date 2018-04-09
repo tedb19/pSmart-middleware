@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.istack.internal.Nullable;
 import jsonvalidator.mapper.SHR;
+import jsonvalidator.utils.Encryption;
 import pSmart.userFiles.UserFile;
 import com.jfoenix.controls.JFXComboBox;
 import javafx.scene.control.Button;
@@ -311,7 +312,7 @@ public class MainSmartCardReadWrite implements ReaderEvents.TransmitApduHandler 
             System.out.println("here it is...");
             exception.printStackTrace();
         }
-        return readMsg;
+        return Encryption.decrypt(readMsg);
     }
 
     public String getCardSerial() {
@@ -408,12 +409,12 @@ public class MainSmartCardReadWrite implements ReaderEvents.TransmitApduHandler 
         String tmpStr = "";
         byte[] tmpArray = new byte[56];
 
-
+        String encText = Encryption.encrypt(textToWrite);
 
         try
         {
             //Validate input
-            if (textToWrite.equals("") || textToWrite.isEmpty())
+            if (encText.equals("") || encText.isEmpty())
             {
                 SmartCardUtils.displayOut(loggerWidget, "Data to be written not found.");
                 return;
@@ -426,10 +427,10 @@ public class MainSmartCardReadWrite implements ReaderEvents.TransmitApduHandler 
             //TODO:displayOut(0, 0, "\nSelect File");
             acos3.selectFile(fileId);
 
-            tmpStr = textToWrite;
+            tmpStr =  encText;
             tmpArray = new byte[expLength];
             int indx = 0;
-            while (indx < textToWrite.length())
+            while (indx < encText.length())
             {
                 tmpArray[indx] = tmpStr.getBytes()[indx];
                 indx++;
